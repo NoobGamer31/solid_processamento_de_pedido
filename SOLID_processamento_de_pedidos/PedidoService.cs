@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SOLID_processamento_de_pedidos.SPR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,19 @@ namespace SOLID_processamento_de_pedidos
 {
     public class PedidoService : IPedidoService
     {
+        // Dependências
+        private readonly ICalculadoraDePedido _calculadora;
+        private readonly INotificadorDeCliente _notificador;
+        private readonly IRepositorio _repo;
+
+        // Injeção de dependências, DIP
+        public PedidoService(ICalculadoraDePedido calculadora, INotificadorDeCliente notificador, IRepositorio repo)
+        {
+            this._calculadora = calculadora;
+            this._notificador = notificador;
+            this._repo = repo;
+        }
+
         public void Processar(Pedido pedido)
         {
             if (!ValidarPedido(pedido))
@@ -16,18 +30,26 @@ namespace SOLID_processamento_de_pedidos
                 return;
             }
 
-            decimal total = 0;
-            foreach (Item i in pedido.Itens)
-            {
-                total = total + (i.Preco * (decimal)1.05);
-            }
+            // VIOLA SPR
+            //decimal total = 0;
+            //foreach (Item i in pedido.Itens)
+            //{
+            //    total = total + (i.Preco * (decimal)1.05);
+            //}
 
+            //pedido.ValorTotal = total;
+
+            // Apenas chama as dependências, não faz o código
+            decimal total = _calculadora.CalcularTotal(pedido);
             pedido.ValorTotal = total;
 
-            RepositorioDePedido rdp = new RepositorioDePedido();
-            rdp.Salvar(pedido);
+            _repo.Salvar(pedido);
+
+            _notificador.Notificar(pedido);
+            Console.WriteLine($"[SERVICE]: Fluxo de processamento de Pedido {pedido.ID} CONCLUÍDO.");
         }
 
+        // Método de validação pode estar aqui porque não é complexo. Em caso de complexidade, criar uma outra interface e classe.
         private bool ValidarPedido(Pedido pedido)
         {
             if (pedido.Itens.Count <= 0)
