@@ -13,7 +13,8 @@ namespace SOLID_processamento_de_pedidos
             // código que abriria BD ou uma lista
 
             // Simulação de salvamento
-            Console.WriteLine($"[REPOSITÓRIO] O pedido de ID {pedido.ID} foi salvo no repositório - Total de {pedido.ValorTotal}");
+            // Viola SPR
+            // Console.WriteLine($"[REPOSITÓRIO] O pedido de ID {pedido.ID} foi salvo no repositório - Total de {pedido.ValorTotal}");
         }
     }
 }
