@@ -11,14 +11,14 @@ namespace SOLID_processamento_de_pedidos
     {
         // Dependências
         private readonly ICalculadoraDePedido _calculadora;
-        private readonly INotificadorDeCliente _notificador;
+        private readonly List<INotificadorDeCliente> _notificadores;
         private readonly IRepositorio _repo;
 
         // Injeção de dependências, DIP
-        public PedidoService(ICalculadoraDePedido calculadora, INotificadorDeCliente notificador, IRepositorio repo)
+        public PedidoService(ICalculadoraDePedido calculadora, List<INotificadorDeCliente> notificador, IRepositorio repo)
         {
             this._calculadora = calculadora;
-            this._notificador = notificador;
+            this._notificadores = notificador;
             this._repo = repo;
         }
 
@@ -45,7 +45,17 @@ namespace SOLID_processamento_de_pedidos
 
             _repo.Salvar(pedido);
 
-            _notificador.Notificar(pedido);
+            // Antes do OCP aplicado
+            //_notificador.Notificar(pedido);
+
+            // OCP aplicado
+            foreach (INotificadorDeCliente ndc in _notificadores)
+            {
+                ndc.Notificar(pedido);
+            }
+
+
+
             Console.WriteLine($"[SERVICE]: Fluxo de processamento de Pedido {pedido.ID} CONCLUÍDO.");
         }
 

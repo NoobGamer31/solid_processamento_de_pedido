@@ -10,7 +10,7 @@ namespace SOLID_processamento_de_pedidos.SPR
     {
         public void Notificar(Pedido pedido)
         {
-            Console.WriteLine($"[REPOSITÓRIO] O pedido de ID {pedido.ID} foi salvo no repositório - Total de {pedido.ValorTotal}");
+            Console.WriteLine($"[REPOSITÓRIO] O pedido de ID {pedido.ID} foi salvo no repositório (Notificação via Email) - Total de {pedido.ValorTotal}");
         }
     }
 }
