@@ -1,4 +1,5 @@
-﻿using SOLID_processamento_de_pedidos.SPR;
+﻿using SOLID_processamento_de_pedidos.OCP;
+using SOLID_processamento_de_pedidos.SPR;
 
 namespace SOLID_processamento_de_pedidos
 {
@@ -21,11 +22,16 @@ namespace SOLID_processamento_de_pedidos
             // CRIAR DEPENDÊNCIAS CONCCRETAS
             IRepositorio repositorio = new RepositorioDePedido();
             ICalculadoraDePedido calculadora = new CalculadoraDeImposto();
-            INotificadorDeCliente notificadorCliente = new NotificadorDeEmail();
+            INotificadorDeCliente notificadorClienteEmail = new NotificadorDeEmail();
+            INotificadorDeCliente notificadorClienteWhatsApp = new NotificadorWhatsApp();
+
+            List<INotificadorDeCliente> notificadores = new(){ notificadorClienteEmail, notificadorClienteWhatsApp };
 
             // INJETAR DEPENDÊNCIAS
+            // VIOLA OCP: Para adicionar via WhatsApp, precisaria modificar aqui. Aberto a extensões, fechado a modificações.
+            //PedidoService pedidoServide = new PedidoService(calculadora, notificadorCliente, repositorio);
             PedidoService pedidoServide = new PedidoService(calculadora, notificadorCliente, repositorio);
-            
+
             pedidoServide.Processar(p1);
             pedidoServide.Processar(p2);
             pedidoServide.Processar(p3);
